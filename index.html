@@ -80,8 +80,8 @@
   <div id="keyMissing">
     <p class="muted">The key is saved only in this browser on this phone. It is never put in the code or on GitHub. It is sent only to Anthropic when you write emails.</p>
     <label for="keyInput">API key</label>
-    <input id="keyInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk-ant-...">
-    <div class="row"><button class="primary" id="saveKeyBtn">Save key</button></div>
+    <input id="keyInput" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Paste your key here">
+    <div class="row"><button id="showKeyBtn">Show</button><button class="primary" id="saveKeyBtn">Save key</button></div>
   </div>
   <div id="keySaved" class="hidden">
     <div class="notice ok">Key saved on this phone (ends in <span id="keyTail"></span>).</div>
@@ -236,12 +236,20 @@ function renderKey() {
   if (k) $("keyTail").textContent = k.slice(-4);
 }
 $("saveKeyBtn").onclick = () => {
-  const k = $("keyInput").value.trim();
-  if (!k.startsWith("sk-ant-")) { showMsg("keyMsg", "err", "That does not look like an Anthropic key. It should start with sk-ant-"); return; }
+  // Remove spaces, line breaks, quotes and hidden characters that phones add when copying.
+  const k = $("keyInput").value.replace(/[\s"'`\u200B-\u200D\uFEFF]/g, "");
+  if (!k) { showMsg("keyMsg", "err", "The box is empty. Press and hold inside the box, tap Paste, then tap Save key."); return; }
   save(KEY_STORE, k);
   $("keyInput").value = "";
-  showMsg("keyMsg", "ok", "Saved. Tap Test key to check it works.");
+  if (/^sk-ant-/i.test(k)) showMsg("keyMsg", "ok", "Saved. Tap Test key to check it works.");
+  else showMsg("keyMsg", "warn", "Saved, but Anthropic keys usually start with sk-ant-. Tap Test key to check it.");
   renderKey(); renderAll();
+};
+$("showKeyBtn").onclick = () => {
+  const inp = $("keyInput");
+  const hidden = inp.type === "password";
+  inp.type = hidden ? "text" : "password";
+  $("showKeyBtn").textContent = hidden ? "Hide" : "Show";
 };
 $("forgetKeyBtn").onclick = () => {
   if (!confirm("Remove the API key from this phone?")) return;
