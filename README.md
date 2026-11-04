@@ -28,7 +28,7 @@ A public repository means anyone can see the code. No key or candidate data is i
 
 ## Use it
 
-1. Step 2: upload a CSV, or paste bios with a line of three dashes (---) between each bio, then add names and emails.
+1. Step 2: upload a CSV, or paste bios with a line of three dashes (`---`) between each bio, then add names and emails.
 2. Step 3: tap "Write emails". Each person appears as a card. Use Edit, Regenerate or Delete. Your edits are saved.
 3. Step 4: tap "Download CSV". The file goes to your Downloads folder.
 
